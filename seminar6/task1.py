@@ -1,20 +1,35 @@
-from classes import ChessBoard
+from sys import argv
 
 
-def check_position(list_of_position: tuple) -> bool:
-    board = ChessBoard()
-    for index, coord in enumerate(list_of_position, 1):
-        if not board.set(int(coord[0]), int(coord[1])):
-            print(f'Ошибка на {index} фигуре')
-            print(board)
-            return False
-    print(board)
+def check_date(date: list) -> bool:
+    def find_sep(str_date: str) -> str:
+        for char in str_date:
+            if not char.isdigit():
+                return char
+
+    if len(date) == 1:
+        day, month, year = tuple(map(int, date[0].split(find_sep(date[0]))))
+    else:
+        day, month, year = tuple(map(int, date))
+    if 0 < month < 13 and 0 <= year <= 9999:
+        if month in [1, 3, 5, 7, 8, 10, 12]:
+            if not 0 < day < 32:
+                return False
+        elif month in [4, 6, 9, 11]:
+            if not 0 < day < 31:
+                return False
+        else:
+            if year % 4 == 0 and year % 100 != 0 or year % 400 == 0:
+                if not 0 < day < 30:
+                    return False
+            else:
+                if not 0 < day < 29:
+                    return False
+    else:
+        return False
     return True
 
 
 if __name__ == '__main__':
-    list_of_position = []
-    for i in range(1, 9):
-        list_of_pos = input(f'Введите координаты {i} ферзя через пробел: ').split()
-        list_of_position.append((int(list_of_pos[0]), int(list_of_pos[1])))
-    print(check_position(tuple(list_of_position)))
+    name, *args = argv
+    print('Верная дата' if check_date(args) else 'Такой даты не может быть')
